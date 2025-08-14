@@ -19,9 +19,12 @@ import logging
 import os
 import subprocess
 
+from docutils.parsers.rst import directives
+
 from pelican import signals
 
 from .mdx_graphviz import GraphvizExtension
+from .rst_graphviz import GraphvizDirective
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +61,7 @@ def register():
     with open(os.devnull, "w") as fid:
         if subprocess.call(["dot", "-V"], stderr=fid) == 0:
             signals.initialized.connect(initialize)
+            directives.register_directive("graphviz", GraphvizDirective)
         else:
             logger.warning(
                 "The dot program from Graphviz is not available. "
